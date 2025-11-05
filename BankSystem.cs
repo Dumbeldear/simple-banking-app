@@ -13,11 +13,23 @@ public class BankSystem
 
         while (running)
         {
-            int choice = _menu.Show();
+            bool isLoggedIn = _account != null;
+            string? currentUser = _account?.Name;
+            int choice = _menu.Show(isLoggedIn, currentUser);
+
             switch (choice)
             {
                 case 1:
                     CreateAccount();
+                    break;
+                case 2:
+                    if (_account == null)
+                    {
+                        Console.WriteLine("Please create an account first.");
+                        break;
+                    }
+                    double amount = _menu.GetDoubleInput("Enter the amount you wish to deposit: ");
+                    _account.Deposit(amount);
                     break;
                 case 5:
                     running = false;
@@ -32,7 +44,7 @@ public class BankSystem
     // Create bank account
     private void CreateAccount()
     {
-        string name = _menu.GetInput("Enter account name: ");
+        string name = _menu.GetStringInput("Enter account name: ");
         _account = new BankAccount(name);
         Console.WriteLine($"Account '{_account.Name}' created with balance: ${_account.Balance}");
     }
