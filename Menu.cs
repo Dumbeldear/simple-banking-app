@@ -1,41 +1,81 @@
 public class Menu
 {
     // Define menu options
-    private readonly Dictionary<int, string> _menuOptions = new()
+    private readonly List<MenuOption> _menuOptions = new()
     {
-        {1, "Create Account"},
-        {2, "Deposit"},
-        {3, "Withdraw"},
-        {4, "Check Balance"},
-        {5, "Exit"}
+        new MenuOption(1, "Create Account", requiresNoLogin: true),
+        new MenuOption(2, "Deposit", requiresLogin: true),
+        new MenuOption(3, "Withdraw", requiresLogin: true),
+        new MenuOption(4, "Check Balance", requiresLogin: true),
+        new MenuOption(5, "Exit")
     };
 
     // Display and return menu options
-    public int Show()
+    public int Show(bool isLoggedIn, string? accountName = null)
     {
-        Console.WriteLine("Welcome to Kevin's Banking!");
-        foreach (var option in _menuOptions)
-            Console.WriteLine($"{option.Key}: {option.Value}");
+        Console.WriteLine(isLoggedIn ? $"Welcome back, {accountName}!" : "You are currently not logged in.");
 
-        return GetValidSelection();
+        var options = _menuOptions.Where(o =>
+            (!o.RequiresLogin && !o.RequiresNoLogin) ||
+            (o.RequiresLogin && isLoggedIn) ||
+            (o.RequiresNoLogin && !isLoggedIn));
+        foreach (var opt in options)
+            Console.WriteLine($"{opt.Id}: {opt.Label}");
+
+        return GetValidSelection(options.Select(o => o.Id).ToList());
     }
 
     // Generic get input method
-    public string GetInput(string message)
+    public string GetStringInput(string message)
     {
-        Console.Write(message);
-        return Console.ReadLine();
+        bool validInput = false;
+        string stringInput = "";
+
+        while (!validInput)
+        {
+            Console.Write(message);
+            stringInput = Console.ReadLine() ?? "";
+
+            if (stringInput == string.Empty)
+            {
+                Console.WriteLine("Input cannot be empty.");
+            }
+            else
+            {
+                validInput = true;
+            }
+        }
+
+        return stringInput;
+    }
+
+    public double GetDoubleInput(string message)
+    {
+        while (true)
+        {
+            Console.Write(message);
+            string input = Console.ReadLine() ?? "";
+
+            if (double.TryParse(input, out double number))
+            {
+                return number;
+            }
+            else
+            {
+                Console.WriteLine("Invalid input. Please enter a valid numeric value.");
+            }
+        }
     }
 
     // Validate numeric user inputs
-    private int GetValidSelection()
+    private int GetValidSelection(List<int> validIds)
     {
         while (true)
         {
             Console.Write("Please select an option: ");
-            string input = Console.ReadLine();
+            string input = Console.ReadLine() ?? "";
 
-            if (int.TryParse(input, out int choice) && _menuOptions.ContainsKey(choice))
+            if (int.TryParse(input, out int choice) && validIds.Contains(choice))
                 return choice;
 
             Console.WriteLine("Invalid input. Try again.");
