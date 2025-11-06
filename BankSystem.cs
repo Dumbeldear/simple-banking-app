@@ -30,6 +30,10 @@ public class BankSystem
                     if (!EnsureAccountExists()) break;
                     Withdraw(_account!);
                     break;
+                case 4:
+                    if (!EnsureAccountExists()) break;
+                    CheckBalance(_account!);
+                    break;
                 case 5:
                     running = false;
                     break;
@@ -70,5 +74,10 @@ public class BankSystem
         double withdrawAmount = _menu.GetDoubleInput("Enter the amount you wish to withdraw: ");
         var withdrawResult = account.Withdraw(withdrawAmount);
         Console.WriteLine(withdrawResult.message);
+    }
+
+    private void CheckBalance(BankAccount account)
+    {
+        Console.WriteLine(account.GetBalanceMessage());
     }
 }
