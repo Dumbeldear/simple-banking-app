@@ -23,13 +23,12 @@ public class BankSystem
                     CreateAccount();
                     break;
                 case 2:
-                    if (_account == null)
-                    {
-                        Console.WriteLine("Please create an account first.");
-                        break;
-                    }
-                    double amount = _menu.GetDoubleInput("Enter the amount you wish to deposit: ");
-                    _account.Deposit(amount);
+                    if (!EnsureAccountExists()) break;
+                    Deposit(_account!);
+                    break;
+                case 3:
+                    if (!EnsureAccountExists()) break;
+                    Withdraw(_account!);
                     break;
                 case 5:
                     running = false;
@@ -47,5 +46,29 @@ public class BankSystem
         string name = _menu.GetStringInput("Enter account name: ");
         _account = new BankAccount(name);
         Console.WriteLine($"Account '{_account.Name}' created with balance: ${_account.Balance}");
+    }
+
+    private bool EnsureAccountExists()
+    {
+        if (_account == null)
+        {
+            Console.WriteLine("Please create an account first.");
+            return false;
+        }
+        return true;
+    }
+
+    private void Deposit(BankAccount account)
+    {
+        double despositAmount = _menu.GetDoubleInput("Enter the amount you wish to deposit: ");
+        var despositResult = account.Deposit(despositAmount);
+        Console.WriteLine(despositResult.message);
+    }
+
+    private void Withdraw(BankAccount account)
+    {
+        double withdrawAmount = _menu.GetDoubleInput("Enter the amount you wish to withdraw: ");
+        var withdrawResult = account.Withdraw(withdrawAmount);
+        Console.WriteLine(withdrawResult.message);
     }
 }

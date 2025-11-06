@@ -11,24 +11,43 @@ public class BankAccount
         Balance = initialBalance;
     }
 
-    // Desposit Money
-    public void Deposit(double despositAmount)
+    public (bool success, string message) Deposit(double depositAmount)
     {
-        bool validDesposit = false;
-        while (!validDesposit)
+
+        if (depositAmount < 1)
         {
-            // Deposit Amount can't be negative or zero
-            if (despositAmount < 1)
-            {
-                Console.WriteLine("Desposit Amount has to be greater than zero.");
-            }
-            else
-            {
-                Balance += despositAmount;
-                Console.WriteLine("You have desposited an amount of $" + despositAmount);
-                Console.WriteLine("Total Bank Account Balance: $" + Balance);
-                validDesposit = true;
-            }
+            return (false, "Deposit Amount has to be greater than zero.");
         }
+        else
+        {
+            Balance += depositAmount;
+            return (true, "You have succesfully deposited $" + depositAmount + " into your account.\n" +
+                GetBalanceMessage());
+        }
+    }
+
+    public (bool success, string message) Withdraw(double withdrawAmount)
+    {
+
+        if (withdrawAmount < 1)
+        {
+            return (false, "Withdraw Amount has to be greater than zero.");
+        }
+        else if (withdrawAmount > Balance)
+        {
+            return (false, "Withdraw Amount cannot be greater than your balance.\n" +
+                GetBalanceMessage());
+        }
+        else
+        {
+            Balance -= withdrawAmount;
+            return (true, "You have succesfully withdrew $" + withdrawAmount + " from your account.\n" +
+                GetBalanceMessage());
+        }
+    }
+
+    public string GetBalanceMessage()
+    {
+        return "Your current bank account balance is: $" + Balance;
     }
 }
