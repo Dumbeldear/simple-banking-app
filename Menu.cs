@@ -4,10 +4,12 @@ public class Menu
     private readonly List<MenuOption> _menuOptions = new()
     {
         new MenuOption(1, "Create Account", requiresNoLogin: true),
-        new MenuOption(2, "Deposit", requiresLogin: true),
-        new MenuOption(3, "Withdraw", requiresLogin: true),
-        new MenuOption(4, "Check Balance", requiresLogin: true),
-        new MenuOption(5, "Exit")
+        new MenuOption(2, "Log In", requiresNoLogin: true),
+        new MenuOption(3, "Deposit", requiresLogin: true),
+        new MenuOption(4, "Withdraw", requiresLogin: true),
+        new MenuOption(5, "Check Balance", requiresLogin: true),
+        new MenuOption(6, "Log Out", requiresLogin: true),
+        new MenuOption(7, "Exit")
     };
 
     // Display and return menu options
@@ -59,6 +61,47 @@ public class Menu
             if (double.TryParse(input, out double number))
             {
                 return number;
+            }
+            else
+            {
+                Console.WriteLine("Invalid input. Please enter a valid double value.");
+            }
+        }
+    }
+
+    public int GetIntInput(string message)
+    {
+        while (true)
+        {
+            Console.Write(message);
+            string input = Console.ReadLine() ?? "";
+            if (int.TryParse(input, out int number))
+            {
+                return number;
+            }
+            else
+            {
+                Console.WriteLine("Invalid input. Please enter a valid numeric value.");
+            }
+        }
+    }
+
+    public int GetPasscodeInput(string message)
+    {
+        while (true)
+        {
+            Console.Write(message);
+            string input = Console.ReadLine() ?? "";
+            if (int.TryParse(input, out int number))
+            {
+                if (input.Length != 4)
+                {
+                    Console.WriteLine("Invalid input. Passcode must be four digits");
+                }
+                else
+                {
+                    return number;
+                }
             }
             else
             {
