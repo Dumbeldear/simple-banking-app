@@ -5,6 +5,11 @@ public class BankSystem
     // Create bank account
     private BankAccount? _account;
 
+    // List of Bank Accounts
+    private List<BankAccount> bankAccounts = new List<BankAccount>();
+    // Bool to hold logged in/out state
+    private bool isLoggedIn = false;
+
     // Run the menu system
     public void Run()
     {
@@ -13,7 +18,6 @@ public class BankSystem
 
         while (running)
         {
-            bool isLoggedIn = _account != null;
             string? currentUser = _account?.Name;
             int choice = _menu.Show(isLoggedIn, currentUser);
 
@@ -23,18 +27,24 @@ public class BankSystem
                     CreateAccount();
                     break;
                 case 2:
-                    if (!EnsureAccountExists()) break;
-                    Deposit(_account!);
+                    ValidateLogIn();
                     break;
                 case 3:
                     if (!EnsureAccountExists()) break;
-                    Withdraw(_account!);
+                    Deposit(_account!);
                     break;
                 case 4:
                     if (!EnsureAccountExists()) break;
-                    CheckBalance(_account!);
+                    Withdraw(_account!);
                     break;
                 case 5:
+                    if (!EnsureAccountExists()) break;
+                    CheckBalance(_account!);
+                    break;
+                case 6:
+                    LogOut();
+                    break;
+                case 7:
                     running = false;
                     break;
                 default:
@@ -47,9 +57,72 @@ public class BankSystem
     // Create bank account
     private void CreateAccount()
     {
+        // Get account name
         string name = _menu.GetStringInput("Enter account name: ");
-        _account = new BankAccount(name);
-        Console.WriteLine($"Account '{_account.Name}' created with balance: ${_account.Balance}");
+        // Get desired user passcode
+        int passcode = _menu.GetPasscodeInput("Create a four digit passcode: ");
+        // Get next bank account Id
+        int nextBankId = GetNextBankAccountId();
+        _account = new BankAccount(nextBankId, name, passcode);
+        Console.WriteLine($"Account with id '{_account.Id}' and name '{_account.Name}' created with balance: ${_account.Balance}");
+        bankAccounts.Add(_account);
+        Console.WriteLine($"Amount of created bank accounts is: " + bankAccounts.Count);
+        // Log user in 
+        LogIn();
+    }
+
+    private int GetNextBankAccountId()
+    {
+        int highestBankAccountId = 1;
+
+        if (bankAccounts.Count < 1)
+        {
+            return highestBankAccountId;
+        }
+        else
+        {
+            foreach (BankAccount bankAccount in bankAccounts)
+            {
+                if (bankAccount.Id > highestBankAccountId)
+                {
+                    highestBankAccountId = bankAccount.Id;
+                }
+            }
+        }
+        return highestBankAccountId + 1;
+    }
+
+    private void ValidateLogIn()
+    {
+        int userInputBankAccountId = _menu.GetIntInput("Enter your bank account id: ");
+        int userInputPasscode = _menu.GetPasscodeInput("Enter your bank account passcode: ");
+
+        // check all accounts for correct combination
+        foreach (BankAccount bankAccount in bankAccounts)
+        {
+            if (bankAccount.Id == userInputBankAccountId && bankAccount.Passcode == userInputPasscode)
+            {
+                _account = bankAccount;
+                LogIn();
+                Console.WriteLine($"You have successfully logged into account: '{bankAccount.Name}'");
+            }
+        }
+
+        if (_account == null) 
+        {
+            Console.WriteLine("You entered invalid credentials.");
+        }
+    }
+
+    private void LogIn()
+    {
+        isLoggedIn = true;
+    }
+
+    private void LogOut()
+    {
+        _account = null;
+        isLoggedIn = false;
     }
 
     private bool EnsureAccountExists()

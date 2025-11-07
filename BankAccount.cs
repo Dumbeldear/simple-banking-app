@@ -1,12 +1,16 @@
 public class BankAccount
 {
     // Declare variables
+    public int Id { get; }
+    public int Passcode { get; }
     public string Name { get; }
     public double Balance { get; private set; }
 
     // Bank Account constructor
-    public BankAccount(string name, double initialBalance = 0)
+    public BankAccount(int id,string name, int passcode, double initialBalance = 0)
     {
+        Id = id;
+        Passcode = passcode;
         Name = name;
         Balance = initialBalance;
     }
