@@ -12,12 +12,31 @@ public class Menu
         new MenuOption(7, "Exit")
     };
 
+    private readonly List<MenuOption> _createBankAccountOptions = new()
+    {
+        new MenuOption(1, "Create Default Bank Account", requiresNoLogin: true),
+        new MenuOption(2, "Create Savings Account", requiresNoLogin: true),
+        new MenuOption(3, "Create Checking Account", requiresNoLogin: true),
+    };
+
     // Display and return menu options
     public int Show(bool isLoggedIn, string? accountName = null)
     {
         Console.WriteLine(isLoggedIn ? $"Welcome back, {accountName}!" : "You are currently not logged in.");
 
         var options = _menuOptions.Where(o =>
+            (!o.RequiresLogin && !o.RequiresNoLogin) ||
+            (o.RequiresLogin && isLoggedIn) ||
+            (o.RequiresNoLogin && !isLoggedIn));
+        foreach (var opt in options)
+            Console.WriteLine($"{opt.Id}: {opt.Label}");
+
+        return GetValidSelection(options.Select(o => o.Id).ToList());
+    }
+
+    public int ShowBankAccountOptions(bool isLoggedIn)
+    {
+        var options = _createBankAccountOptions.Where(o =>
             (!o.RequiresLogin && !o.RequiresNoLogin) ||
             (o.RequiresLogin && isLoggedIn) ||
             (o.RequiresNoLogin && !isLoggedIn));
