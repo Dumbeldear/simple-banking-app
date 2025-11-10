@@ -54,20 +54,19 @@ public class BankSystem
         }
     }
 
-    // Create bank account
     private void CreateAccount()
     {
-        // Get account name
+        int accountTypeInt = _menu.ShowBankAccountOptions(isLoggedIn);
+        AccountType accountType = (AccountType)accountTypeInt;
+
         string name = _menu.GetStringInput("Enter account name: ");
-        // Get desired user passcode
         int passcode = _menu.GetPasscodeInput("Create a four digit passcode: ");
-        // Get next bank account Id
         int nextBankId = GetNextBankAccountId();
-        _account = new BankAccount(nextBankId, name, passcode);
-        Console.WriteLine($"Account with id '{_account.Id}' and name '{_account.Name}' created with balance: ${_account.Balance}");
+
+        _account = AccountFactory.Create(accountType, nextBankId, name, passcode);
+
+        Console.WriteLine($"Account with id '{_account!.Id}' and name '{_account!.Name}' created with balance: ${_account!.GetBalance()}");
         bankAccounts.Add(_account);
-        Console.WriteLine($"Amount of created bank accounts is: " + bankAccounts.Count);
-        // Log user in 
         LogIn();
     }
 
