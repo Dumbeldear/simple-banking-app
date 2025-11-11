@@ -2,13 +2,13 @@ public class BankAccount
 {
     // Declare variables
     public int Id { get; }
-    public int Passcode { get; }
+    protected int Passcode { get; }
     public string Name { get; }
-    protected double Balance { get; set; }
+    protected decimal Balance { get; set; }
     public virtual string AccountType { get; }
 
     // Bank Account constructor
-    public BankAccount(int id, string name, int passcode, double initialBalance = 0)
+    public BankAccount(int id, string name, int passcode, decimal initialBalance = 0)
     {
         Id = id;
         Passcode = passcode;
@@ -17,7 +17,7 @@ public class BankAccount
         AccountType = "Generic Bank Account";
     }
 
-    public virtual (bool success, string message) Deposit(double depositAmount)
+    public virtual (bool success, string message) Deposit(decimal depositAmount)
     {
 
         if (depositAmount < 1)
@@ -32,7 +32,7 @@ public class BankAccount
         }
     }
 
-    public virtual (bool success, string message) Withdraw(double withdrawAmount)
+    public virtual (bool success, string message) Withdraw(decimal withdrawAmount)
     {
 
         if (withdrawAmount < 1)
@@ -57,18 +57,23 @@ public class BankAccount
         return "Your current bank account balance is: $" + Balance;
     }
 
-    public double GetBalance()
+    public decimal GetBalance()
     {
         return Balance;
+    }
+
+    public bool ValidatePasscode(int userInputtedPasscode)
+    {
+        return (userInputtedPasscode == Passcode);
     }
 }
 
 public class SavingsAccount : BankAccount
 {
-    public double InterestRate { get; }
+    public decimal InterestRate { get; }
     public override string AccountType { get; } = "Savings Account";
 
-    public SavingsAccount(int id, string name, int passcode, double initialBalance = 0, double interestRate = 0.04)
+    public SavingsAccount(int id, string name, int passcode, decimal initialBalance = 0, decimal interestRate = (decimal)0.04)
         : base(id, name, passcode, initialBalance)
     {
         InterestRate = interestRate;
@@ -83,7 +88,7 @@ public class SavingsAccount : BankAccount
     }
 
     // Assume interest rate gain hits bank account every deposit - wish this happened in real life
-    public override (bool success, string message) Deposit(double depositAmount)
+    public override (bool success, string message) Deposit(decimal depositAmount)
     {
 
         if (depositAmount < 1)
@@ -92,7 +97,7 @@ public class SavingsAccount : BankAccount
         }
         else
         {
-            double InterestGain = Balance * InterestRate;
+            decimal InterestGain = Balance * InterestRate;
             Balance += depositAmount + InterestGain;
             return (true, "You have succesfully deposited $" + depositAmount + " into your account.\n" +
                 "An interest gain of $" + InterestGain + " has occured since your last deposit.\n" +
@@ -103,16 +108,16 @@ public class SavingsAccount : BankAccount
 
 public class CheckingsAccount : BankAccount
 {
-    public double TransactionFee { get; }
+    public decimal TransactionFee { get; }
     public override string AccountType { get; } = "Checking Account";
 
-    public CheckingsAccount(int id, string name, int passcode, double transactionFee = 2, double initialBalance = 0)
+    public CheckingsAccount(int id, string name, int passcode, decimal transactionFee = 2, decimal initialBalance = 0)
         : base(id, name, passcode, initialBalance)
     {
         TransactionFee = transactionFee;
     }
 
-    public override (bool success, string message) Withdraw(double withdrawAmount)
+    public override (bool success, string message) Withdraw(decimal withdrawAmount)
     {
 
         if (withdrawAmount < 1)
