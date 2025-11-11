@@ -45,6 +45,9 @@ public class BankSystem
                     LogOut();
                     break;
                 case 7:
+                    ApplyInterest(_account!);
+                    break;
+                case 8:
                     running = false;
                     break;
                 default:
@@ -132,6 +135,15 @@ public class BankSystem
             return false;
         }
         return true;
+    }
+    
+    private void ApplyInterest(BankAccount account)
+    {
+        if (account is SavingsAccount savingsAccount)
+        {
+            int n = _menu.GetIntInput("Enter the number of times you want interest to apply: ");
+            Console.WriteLine(savingsAccount.ApplyInterestOverNTimes(n));
+        }
     }
 
     private void Deposit(BankAccount account)

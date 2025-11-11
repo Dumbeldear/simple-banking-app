@@ -4,6 +4,7 @@ public class MenuOption
     public string Label { get; }
     public bool RequiresLogin { get; }
     public bool RequiresNoLogin { get; }
+    public bool isSaverAccount { get; }
 
     public MenuOption(int id, string label, bool requiresLogin = false, bool requiresNoLogin = false)
     {

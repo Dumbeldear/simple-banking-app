@@ -9,7 +9,8 @@ public class Menu
         new MenuOption(4, "Withdraw", requiresLogin: true),
         new MenuOption(5, "Check Balance", requiresLogin: true),
         new MenuOption(6, "Log Out", requiresLogin: true),
-        new MenuOption(7, "Exit")
+        new MenuOption(7, "Apply Interest", requiresLogin: true),
+        new MenuOption(8, "Exit")
     };
 
     private readonly List<MenuOption> _createBankAccountOptions = new()
