@@ -87,6 +87,27 @@ public class SavingsAccount : BankAccount
         }
     }
 
+    // Recursive function that applies interest over a 'n' times 
+    public string ApplyInterestOverNTimes(int n)
+    {
+        if (n < 1)
+        {
+            return "No interest applied.";
+        }
+
+        Balance += Balance * InterestRate;
+
+        if (n == 1)
+        {
+            return $"Interest applied once. New balance: {Balance:C}";
+        }
+
+        // Recursive case: apply more times and bubble message up
+        string result = ApplyInterestOverNTimes(n - 1);
+        return $"Interest applied {n} times. New balance: {Balance:C}";
+    }
+
+
     // Assume interest rate gain hits bank account every deposit - wish this happened in real life
     public override (bool success, string message) Deposit(decimal depositAmount)
     {
