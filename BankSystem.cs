@@ -99,7 +99,7 @@ public class BankSystem
         // check all accounts for correct combination
         foreach (BankAccount bankAccount in bankAccounts)
         {
-            if (bankAccount.Id == userInputBankAccountId && bankAccount.Passcode == userInputPasscode)
+            if (bankAccount.Id == userInputBankAccountId && bankAccount.ValidatePasscode(userInputPasscode))
             {
                 _account = bankAccount;
                 LogIn();
@@ -136,14 +136,14 @@ public class BankSystem
 
     private void Deposit(BankAccount account)
     {
-        double despositAmount = _menu.GetDoubleInput("Enter the amount you wish to deposit: ");
+        decimal despositAmount = _menu.GetDecimalInput("Enter the amount you wish to deposit: ");
         var despositResult = account.Deposit(despositAmount);
         Console.WriteLine(despositResult.message);
     }
 
     private void Withdraw(BankAccount account)
     {
-        double withdrawAmount = _menu.GetDoubleInput("Enter the amount you wish to withdraw: ");
+        decimal withdrawAmount = _menu.GetDecimalInput("Enter the amount you wish to withdraw: ");
         var withdrawResult = account.Withdraw(withdrawAmount);
         Console.WriteLine(withdrawResult.message);
     }

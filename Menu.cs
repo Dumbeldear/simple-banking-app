@@ -70,14 +70,14 @@ public class Menu
         return stringInput;
     }
 
-    public double GetDoubleInput(string message)
+    public decimal GetDecimalInput(string message)
     {
         while (true)
         {
             Console.Write(message);
             string input = Console.ReadLine() ?? "";
 
-            if (double.TryParse(input, out double number))
+            if (decimal.TryParse(input, out decimal number))
             {
                 return number;
             }
